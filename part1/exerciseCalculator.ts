@@ -28,7 +28,10 @@ const parseExerciseArguments = (args: Array<string>): ExerciseValues => {
   }
 };
 
-const calculateExercises = (days: Array<number>, target: number): Result => {
+export const calculateExercises = (
+  days: Array<number>,
+  target: number
+): Result => {
   const periodLength = days.length;
   const trainingDays = days.filter((d) => d > 0).length;
   const average = days.reduce((acc, curr) => acc + curr) / periodLength;
