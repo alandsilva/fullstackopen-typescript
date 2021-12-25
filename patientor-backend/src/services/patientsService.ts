@@ -22,6 +22,7 @@ const addPatient = (patient: NewPatient): NonSensitivePatient => {
     id: id,
     ...patient,
   };
+  patientsData.push(newPatient);
   return newPatient;
 };
 
