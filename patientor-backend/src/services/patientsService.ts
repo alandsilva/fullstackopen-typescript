@@ -26,6 +26,7 @@ const addPatient = (patient: NewPatient): PublicPatient => {
   const newPatient = {
     id: id,
     ...patient,
+    entries: []
   };
   patientsData.push(newPatient);
   return newPatient;
