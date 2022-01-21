@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import patientsData from '../../data/patients.json';
 
 import { PublicPatient, NewPatient, Patient } from '../types';
