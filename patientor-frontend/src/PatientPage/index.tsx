@@ -55,10 +55,11 @@ const GenderIcon = ({gender}: {gender: Gender}) => {
 };
 
 const EntryItem = ({entry}: {entry: Entry}) => {
+    const [{ diagnoses }] = useStateValue();
     return <div>
         <p>{entry.date} {entry.description}</p>
         <ul>
-            {entry.diagnosisCodes && entry.diagnosisCodes.map((diagnostic) => <li key={diagnostic}>{diagnostic}</li>)}
+            {entry.diagnosisCodes && entry.diagnosisCodes.map((code) => <li key={code}>{code} {diagnoses[code].name}</li>)}
         </ul>
         </div>;
 };
