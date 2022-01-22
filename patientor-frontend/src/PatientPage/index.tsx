@@ -5,8 +5,8 @@ import {
   } from 'react-router-dom';
 import { useStateValue, setPatient } from "../state";
 import { apiBaseUrl } from "../constants";
-import { Patient as PatientType, Gender, Entry } from "../types";
-import { Icon } from 'semantic-ui-react';
+import { Patient as PatientType, Gender, Entry, HospitalEntry, HealthCheckEntry, OccupationalHealthcareEntry } from "../types";
+import { Icon, Card } from 'semantic-ui-react';
 
 
 const Patient = () => {
@@ -55,13 +55,60 @@ const GenderIcon = ({gender}: {gender: Gender}) => {
 };
 
 const EntryItem = ({entry}: {entry: Entry}) => {
+    switch(entry.type) {
+        case 'Hospital': return <HospitalItem entry={entry}/>;
+        case 'HealthCheck': return <HealthCheckItem entry={entry}/>;
+        case 'OccupationalHealthcare': return <OccupationalHealthcareItem entry={entry}/>;
+        default: return null;
+    }
+};
+
+const HospitalItem = ({entry}: {entry: HospitalEntry}) => {
+    return <Card>
+        <Card.Content header={<>{entry.date} <Icon name='hospital'/></>} />
+        <Card.Content description={entry.description} />
+        <Card.Content extra>
+            <Icon name='calendar'/> {entry.discharge.date}
+            <Icon name='question'/> {entry.discharge.criteria}
+         </Card.Content>
+         <Card.Content>
+         {entry.diagnosisCodes && <DiagnosisList codes={entry.diagnosisCodes}/>}
+         </Card.Content>
+    </Card>;
+};
+
+const HealthCheckItem = ({entry}: {entry: HealthCheckEntry}) => {
+    return <Card>
+        <Card.Content header={<>{entry.date} <Icon name='doctor'/></>} />
+        <Card.Content description={entry.description} />
+        <Card.Content extra>
+            <Icon name='heart'/> {entry.healthCheckRating}/3
+         </Card.Content>
+         <Card.Content>
+         {entry.diagnosisCodes && <DiagnosisList codes={entry.diagnosisCodes}/>}
+         </Card.Content>
+    </Card>;
+};
+
+const OccupationalHealthcareItem = ({entry}: {entry: OccupationalHealthcareEntry}) => {
+    return <Card>
+        <Card.Content header={<>{entry.date} <Icon name='stethoscope'/> {entry.employerName}</>} />
+        <Card.Content description={entry.description} />
+        {entry.sickLeave && <Card.Content extra>
+            <Icon name='calendar minus'/> {entry.sickLeave.startDate}
+            <Icon name='calendar plus'/> {entry.sickLeave.endDate}
+         </Card.Content>}
+         <Card.Content>
+         {entry.diagnosisCodes && <DiagnosisList codes={entry.diagnosisCodes}/>}
+         </Card.Content>
+    </Card>;
+};
+
+const DiagnosisList = ({codes}: {codes: string[]}) => {
     const [{ diagnoses }] = useStateValue();
-    return <div>
-        <p>{entry.date} {entry.description}</p>
-        <ul>
-            {entry.diagnosisCodes && entry.diagnosisCodes.map((code) => <li key={code}>{code} {diagnoses[code].name}</li>)}
-        </ul>
-        </div>;
+    return <ul>
+        {codes.map(code => <li key={code}>{code} {diagnoses[code].name}</li>)}
+    </ul>;
 };
 
 export default Patient;
