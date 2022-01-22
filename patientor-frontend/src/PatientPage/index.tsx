@@ -5,7 +5,7 @@ import {
   } from 'react-router-dom';
 import { useStateValue, setPatient } from "../state";
 import { apiBaseUrl } from "../constants";
-import { Patient as PatientType, Gender } from "../types";
+import { Patient as PatientType, Gender, Entry } from "../types";
 import { Icon } from 'semantic-ui-react';
 
 
@@ -38,6 +38,7 @@ const Patient = () => {
           <h2>{patient.name} <GenderIcon gender={patient.gender}/></h2>
           <p>ssn: {patient.ssn}</p>
           <p>occupation: {patient.occupation}</p>
+          {patient.entries.map((entry) => <EntryItem key={entry.id} entry={entry}/>)}
         </div>}
         </div>
         
@@ -51,6 +52,15 @@ const GenderIcon = ({gender}: {gender: Gender}) => {
         case 'other': return <Icon name='transgender alternate' />;
         default: return <Icon name='neuter' />;
     }
+};
+
+const EntryItem = ({entry}: {entry: Entry}) => {
+    return <div>
+        <p>{entry.date} {entry.description}</p>
+        <ul>
+            {entry.diagnosisCodes && entry.diagnosisCodes.map((diagnostic) => <li key={diagnostic}>{diagnostic}</li>)}
+        </ul>
+        </div>;
 };
 
 export default Patient;
