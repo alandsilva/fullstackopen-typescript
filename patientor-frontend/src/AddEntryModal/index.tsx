@@ -8,6 +8,7 @@ interface Props {
   modalOpen: boolean;
   onClose: () => void;
   error?: string;
+  onSubmit: (values: EntryFormValues) => void;
 }
 
 const options = [
@@ -16,7 +17,7 @@ const options = [
   { text: 'Hospital', value: 'Hospital' },
 ];
 
-const AddEntryModal = ({ modalOpen, onClose, error }: Props) => {
+const AddEntryModal = ({ modalOpen, onClose, error, onSubmit }: Props) => {
   const [type, setType] = React.useState<string>('');
 
   const onChange = (
@@ -26,20 +27,14 @@ const AddEntryModal = ({ modalOpen, onClose, error }: Props) => {
     setType(value);
   };
 
-  const onSubmitForm = (values: EntryFormValues) => {
-    console.log('submit');
-    console.log(values);
-  };
-
   return (
     <Modal open={modalOpen} onClose={onClose} centered={false} closeIcon>
       <Modal.Header>Add a new patient</Modal.Header>
       <Modal.Content>
         <label>Type</label>
         <Form.Select value={type} options={options} onChange={onChange} />
+        <AddEntryForm type={type} onSubmit={onSubmit} onCancel={onClose} />
         {error && <Segment inverted color='red'>{`Error: ${error}`}</Segment>}
-        {/* <AddPatientForm onSubmit={onSubmit} onCancel={onClose} /> */}
-        <AddEntryForm type={type} onSubmit={onSubmitForm} onCancel={onClose} />
       </Modal.Content>
     </Modal>
   );
@@ -54,7 +49,7 @@ interface AddEntryProps {
 const AddEntryForm = ({ type, onSubmit, onCancel }: AddEntryProps) => {
   switch (type) {
     case 'HealthCheck':
-      return <AddHealthCheckForm />;
+      return <AddHealthCheckForm onSubmit={onSubmit} onCancel={onCancel} />;
     case 'OccupationalHealthcare':
       return (
         <AddOccupationalHealthForm onSubmit={onSubmit} onCancel={onCancel} />

@@ -5,7 +5,7 @@ const router = express.Router();
 
 import patientsService from '../services/patientsService';
 
-import {toNewPatient, toNewEntry} from '../utils';
+import { toNewPatient, toNewEntry } from '../utils';
 
 router.get('/', (_req, res) => {
   res.send(patientsService.getEntries());
@@ -13,7 +13,7 @@ router.get('/', (_req, res) => {
 
 router.get('/:id', (req, res) => {
   const patient = patientsService.getPatient(req.params.id);
-  if(patient) {
+  if (patient) {
     res.send(patient);
   } else {
     res.sendStatus(404);
@@ -36,7 +36,9 @@ router.post('/', (req, res) => {
 
 router.post('/:id/entries', (req, res) => {
   try {
+    console.log(req.body);
     const newEntry = toNewEntry(req.body);
+    console.log(newEntry);
     const updatedPatient = patientsService.addEntry(req.params.id, newEntry);
     res.json(updatedPatient);
   } catch (error: unknown) {

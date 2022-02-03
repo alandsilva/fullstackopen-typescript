@@ -10,11 +10,13 @@ import {
   HospitalEntry,
   HealthCheckEntry,
   OccupationalHealthcareEntry,
+  Patient,
 } from '../types';
 import { Icon, Card, Button } from 'semantic-ui-react';
 import AddEntryModal from '../AddEntryModal';
+import { EntryFormValues } from '../AddEntryModal/FormField';
 
-const Patient = () => {
+const PatientPage = () => {
   const [{ patient }, dispatch] = useStateValue();
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | undefined>();
@@ -23,6 +25,21 @@ const Patient = () => {
   const closeModal = (): void => {
     setModalOpen(false);
     setError(undefined);
+  };
+
+  const onSubmitForm = async (values: EntryFormValues) => {
+    console.log('submit');
+    try {
+      const { data: updatedPatient } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${patient!.id}/entries`,
+        values
+      );
+      dispatch(setPatient(updatedPatient));
+      setModalOpen(false);
+    } catch (e: any) {
+      console.log(e.response.data);
+      setError(e.response.data);
+    }
   };
 
   React.useEffect(() => {
@@ -59,6 +76,7 @@ const Patient = () => {
           <AddEntryModal
             modalOpen={modalOpen}
             onClose={closeModal}
+            onSubmit={onSubmitForm}
             error={error}
           />
           <Button onClick={() => openModal()}>Add New Entry</Button>
@@ -181,4 +199,4 @@ const DiagnosisList = ({ codes }: { codes: string[] }) => {
   );
 };
 
-export default Patient;
+export default PatientPage;

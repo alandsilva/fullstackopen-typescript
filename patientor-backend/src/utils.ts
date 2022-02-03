@@ -1,4 +1,10 @@
-import { NewPatient, Gender, EntryType, NewEntry, HealthCheckRating } from './types';
+import {
+  NewPatient,
+  Gender,
+  EntryType,
+  NewEntry,
+  HealthCheckRating,
+} from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const toNewPatient = (object: any): NewPatient => {
@@ -31,6 +37,7 @@ const isDate = (date: string): boolean => {
 
 const parseDate = (date: unknown): string => {
   if (!date || !isString(date) || !isDate(date)) {
+    console.log('is not a valid date', date);
     throw new Error('Incorrect or missing date: ' + date);
   }
   return date;
@@ -57,9 +64,9 @@ const isEntryType = (param: any): param is EntryType => {
 };
 
 const parseEntryType = (entryType: unknown): EntryType => {
-  if(!entryType || !isEntryType(entryType)){
-    throw new Error('Incorrect or missing entry type: ' +entryType);
-  } 
+  if (!entryType || !isEntryType(entryType)) {
+    throw new Error('Incorrect or missing entry type: ' + entryType);
+  }
   return entryType;
 };
 
@@ -69,9 +76,10 @@ const isHealthCheckRating = (param: any): param is HealthCheckRating => {
 };
 
 const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
-  if(!rating || !isHealthCheckRating(rating)){
-    throw new Error('Incorrect or missing healthcheckrating: ' +rating);
-  } 
+  if (!rating || !isHealthCheckRating(rating)) {
+    console.log('is not a health check rating', rating);
+    throw new Error('Incorrect or missing healthcheckrating: ' + rating);
+  }
   return rating;
 };
 
@@ -80,32 +88,35 @@ export const toNewEntry = (object: any): NewEntry => {
   const entryType = parseEntryType(object.type);
   let extraFields = {};
 
-  switch (entryType) {  
-    case 'HealthCheck': 
+  switch (entryType) {
+    case 'HealthCheck':
       extraFields = {
-        healthCheckRating : parseHealthCheckRating(object.healthCheckRating)
-      }; 
+        healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+      };
       break;
-    case 'OccupationalHealthcare': 
+    case 'OccupationalHealthcare':
+      console.log('came here');
       extraFields = {
-        employerName : parseString(object.employerName),
-        sickLeave: object.sickLeave ? {
-          startDate: parseDate(object.sickLeave.startDate),
-          endDate: parseDate(object.sickLeave.endDate)
-        }: undefined
-      }; 
-    break;
+        employerName: parseString(object.employerName),
+        sickLeave: object.sickLeave
+          ? {
+              startDate: parseDate(object.sickLeave.startDate),
+              endDate: parseDate(object.sickLeave.endDate),
+            }
+          : undefined,
+      };
+      break;
     case 'Hospital':
       extraFields = {
-        discharge : {
+        discharge: {
           date: parseDate(object.discharge.date),
           criteria: parseString(object.discharge.criteria),
-        }
-      }; 
-    break;
-    default: break;
+        },
+      };
+      break;
+    default:
+      break;
   }
-
 
   const newEntry: NewEntry = {
     description: parseString(object.description),
@@ -117,6 +128,5 @@ export const toNewEntry = (object: any): NewEntry => {
     ...extraFields,
   };
 
-   return newEntry;
+  return newEntry;
 };
-

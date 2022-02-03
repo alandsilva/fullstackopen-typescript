@@ -4,7 +4,7 @@ import { PublicPatient, NewPatient, Patient, NewEntry, Entry } from '../types';
 
 import { v1 as uuid } from 'uuid';
 
-const patients: Array<Patient> = patientsData ;
+const patients: Array<Patient> = patientsData;
 
 const getEntries = (): PublicPatient[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
@@ -24,22 +24,22 @@ const addPatient = (patient: NewPatient): PublicPatient => {
   const newPatient = {
     id: id,
     ...patient,
-    entries: []
+    entries: [],
   };
   patientsData.push(newPatient);
   return newPatient;
 };
 
-const addEntry = (patientId: string, entry: NewEntry): Patient |  undefined => {
+const addEntry = (patientId: string, entry: NewEntry): Patient | undefined => {
   const id: string = uuid();
   const newEntry = {
     id: id,
-    ...entry
+    ...entry,
   };
-  const patientToUpdate = patients.find(patient => patient.id === patientId);
+  const patientToUpdate = patients.find((patient) => patient.id === patientId);
   if (!patientToUpdate) {
     return undefined;
-  } 
+  }
 
   patientToUpdate.entries.push(newEntry as Entry);
   return patientToUpdate;
@@ -49,5 +49,5 @@ export default {
   getEntries,
   getPatient,
   addPatient,
-  addEntry
+  addEntry,
 };
